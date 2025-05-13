@@ -2,29 +2,33 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Mahasiswa = require("./models/Mahasiswa");
-const mahasiswaRoutes = require("./routes/mahasiswa");
-
 
 // Middleware penting!
 app.use(express.json()); // Untuk JSON
-app.use('/mahasiswa', mahasiswaRoutes); // akses: /mahasiswa?nrp=...
 app.use(express.urlencoded({ extended: true })); // Untuk x-www-form-urlencoded
 
+// Endpoint untuk menambahkan Mahasiswa
 app.post("/mahasiswa", (req, res) => {
   const mahasiswaData = req.body;
 
+  // Memastikan bahwa yang diterima adalah objek, bukan array
   if (Array.isArray(mahasiswaData)) {
     return res
       .status(400)
       .json({ message: "Data harus berupa objek, bukan array" });
   }
 
+  // Membuat objek mahasiswa baru
   const mahasiswaBaru = new Mahasiswa(mahasiswaData);
 
+  // Simpan ke database
   mahasiswaBaru
     .save()
     .then((result) => {
-      res.status(201).json(result); // ✅ Kirimkan langsung objek Mahasiswa
+      res.status(201).json({
+        message: "Mahasiswa berhasil ditambahkan",
+        mahasiswa: result,
+      });
     })
     .catch((err) => {
       res
@@ -53,36 +57,23 @@ mongoose
   });
 
   // Endpoint untuk mengambil data Mahasiswa
-// Endpoint untuk mengambil data Mahasiswa
-app.get("/mahasiswa", async (req, res) => {
-  const { nrp } = req.query;
+app.get("/mahasiswa", (req, res) => {
+  const nrp = req.query.nrp;
 
-  try {
-    const data = await Mahasiswa.findOne({ nrp });
-
-    if (!data) {
-      return res.status(404).json({
-        status: false,
-        data: [],
-        message: "Mahasiswa tidak ditemukan"
-      });
-    }
-
-    // ✅ Kembalikan dalam bentuk array
-    res.json({
-      status: true,
-      data: [data]
+  // Misalnya, mengambil data mahasiswa dari database berdasarkan NRP
+  Mahasiswa.find({ nrp: nrp })
+    .then((data) => {
+      // Pastikan data selalu dalam bentuk array, bahkan jika hanya satu elemen
+      if (data.length === 1) {
+        return res.json([data[0]]); // Bungkus data dalam array
+      } else {
+        return res.json(data); // Jika ada lebih dari satu, kirim data seperti biasa
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
     });
-  } catch (err) {
-    res.status(500).json({
-      status: false,
-      data: [],
-      message: "Server error",
-      error: err
-    });
-  }
 });
-
 
 
 

@@ -2,32 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Mahasiswa = require("../models/Mahasiswa");
 
-// GET /mahasiswa?nrp=...
-router.get('/', async (req, res) => {
-  const nrp = req.query.nrp;
+// GET semua Mahasiswa berdasarkan query NRP
+router.get("/", async (req, res) => {
   try {
-    const mahasiswa = await Mahasiswa.findOne({ nrp });
-
-    if (!mahasiswa) {
-      return res.status(404).json({
-        status: false,
-        data: [],
-        message: 'Mahasiswa tidak ditemukan'
-      });
-    }
-
-    // Kembalikan dalam bentuk array
-    res.json({
-      status: true,
-      data: [mahasiswa]
-    });
-
+    const mahasiswaList = await Mahasiswa.find({ nrp: req.query.nrp });
+    res.status(200).json({ mahasiswa: mahasiswaList });
   } catch (err) {
-    res.status(500).json({
-      status: false,
-      data: [],
-      message: 'Terjadi kesalahan server'
-    });
+    res.status(500).json({ message: "Terjadi kesalahan" });
   }
 });
 
