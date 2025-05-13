@@ -3,7 +3,7 @@ const router = express.Router();
 const Mahasiswa = require("../models/Mahasiswa");
 
 // GET semua Mahasiswa
-router.get("/", async (req, res) => {
+router.get("/mahasiswa", async (req, res) => {
   try {
     const data = await Mahasiswa.find();
     res.json(data);
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST tambah Mahasiswa
-router.post("/", async (req, res) => {
+router.post("/mahasiswa", async (req, res) => {
   const newMhs = new Mahasiswa(req.body);
   try {
     const saved = await newMhs.save();
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
 });
 
 // PUT update mahasiswa
-router.put('/:id', async (req, res) => {
+router.put('/mahasiswa/:id', async (req, res) => {
     try {
         const updated = await Mahasiswa.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updated) return res.status(404).json({ message: 'Mahasiswa tidak ditemukan' });
@@ -46,7 +46,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE hapus mahasiswa
-router.delete('/:id', async (req, res) => {
+router.delete('/mahasiswa/:id', async (req, res) => {
     try {
         const deleted = await Mahasiswa.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ message: 'Mahasiswa tidak ditemukan' });
