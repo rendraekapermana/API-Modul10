@@ -1,23 +1,24 @@
-require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
-const mahasiswaRoutes = require("./routes/mahasiswa");
-
 const app = express();
-app.use(express.json());
-app.use("/mahasiswa", mahasiswaRoutes);
-app.use(express.urlencoded({ extended: true }));
+const mongoose = require("mongoose");
 
+// Middleware penting!
+app.use(express.json()); // Untuk JSON
+app.use(express.urlencoded({ extended: true })); // Untuk x-www-form-urlencoded
 
+app.post("/mahasiswa", async (req, res) => {
+  try {
+    const { nama, nrp, email, jurusan } = req.body;
+    const newMhs = new Mahasiswa({ nama, nrp, email, jurusan });
+    await newMhs.save();
+    res.status(201).json(newMhs);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Jalankan server
 const PORT = process.env.PORT || 3000;
-
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("MongoDB connected");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
