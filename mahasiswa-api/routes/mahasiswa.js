@@ -3,7 +3,7 @@ const router = express.Router();
 const Mahasiswa = require("../models/Mahasiswa");
 
 // GET semua Mahasiswa
-app.get("/mahasiswa", async (req, res) => {
+router.get("/mahasiswa", async (req, res) => {
   try {
     // Ambil data mahasiswa dari database
     const mahasiswaList = await Mahasiswa.find({ nrp: req.query.nrp });
