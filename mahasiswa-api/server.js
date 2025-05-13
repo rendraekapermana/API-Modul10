@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const Mahasiswa = require("./models/Mahasiswa");
 
 // Middleware penting!
 app.use(express.json()); // Untuk JSON
