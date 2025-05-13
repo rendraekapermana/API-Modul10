@@ -1,21 +1,29 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
-const mahasiswaRouter = require("./routes/mahasiswa");
+const mahasiswaRouter = require("./routes/mahasiswa"); // <- arahkan sesuai nama file
 
 const app = express();
 
-// Middleware penting!
+// Middleware
 app.use(cors());
-app.use(express.json()); // untuk JSON
-app.use(express.urlencoded({ extended: true })); // UNTUK application/x-www-form-urlencoded
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // <--- ini wajib ditambahkan
 
 // Routing
 app.use("/mahasiswa", mahasiswaRouter);
 
-// Port
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Cek koneksi database dan run server
+mongoose
+  .connect("mongodb+srv://<your-mongo-uri>", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    app.listen(3000, () => {
+      console.log("Server running on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
