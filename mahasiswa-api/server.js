@@ -64,11 +64,10 @@ app.get("/mahasiswa", (req, res) => {
   Mahasiswa.find({ nrp: nrp })
     .then((data) => {
       // Pastikan data selalu dalam bentuk array, bahkan jika hanya satu elemen
-      if (data.length === 1) {
-        return res.json([data[0]]); // Bungkus data dalam array
-      } else {
-        return res.json(data); // Jika ada lebih dari satu, kirim data seperti biasa
-      }
+     res.json({
+       status: true,
+       data: data,
+     });
     })
     .catch((error) => {
       res.status(500).json({ message: error.message });

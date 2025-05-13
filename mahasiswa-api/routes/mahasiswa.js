@@ -6,7 +6,10 @@ const Mahasiswa = require("../models/Mahasiswa");
 router.get("/", async (req, res) => {
   try {
     const mahasiswaList = await Mahasiswa.find({ nrp: req.query.nrp });
-    res.status(200).json({ mahasiswa: mahasiswaList });
+    res.status(200).json({
+      status: true,
+      data: mahasiswaList,
+    });
   } catch (err) {
     res.status(500).json({ message: "Terjadi kesalahan" });
   }
@@ -19,7 +22,10 @@ router.get("/:id", async (req, res) => {
     if (!mhs)
       return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
 
-    res.json([mhs]); // Bungkus dalam array
+    res.json({
+      status: true,
+      data: [mhs], // dibungkus array sesuai ekspektasi Android
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -30,7 +36,10 @@ router.post("/", async (req, res) => {
   const newMhs = new Mahasiswa(req.body);
   try {
     const saved = await newMhs.save();
-    res.status(201).json(saved);
+    res.status(201).json({
+      status: true,
+      data: [saved],
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -45,7 +54,10 @@ router.put("/:id", async (req, res) => {
     if (!updated)
       return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
 
-    res.json([updated]);
+    res.json({
+      status: true,
+      data: [updated],
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
