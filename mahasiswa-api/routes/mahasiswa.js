@@ -3,12 +3,16 @@ const router = express.Router();
 const Mahasiswa = require("../models/Mahasiswa");
 
 // GET semua Mahasiswa
-router.get("/", async (req, res) => {
+app.get("/mahasiswa", async (req, res) => {
   try {
-    const data = await Mahasiswa.find();
-    res.json({ mahasiswa: data });  // Membungkus array dalam objek dengan properti 'mahasiswa'
+    // Ambil data mahasiswa dari database
+    const mahasiswaList = await Mahasiswa.find({ nrp: req.query.nrp });
+
+    // Kirimkan respons dengan membungkus data dalam objek "mahasiswa"
+    res.status(200).json({ mahasiswa: mahasiswaList });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Tangani error jika terjadi
+    res.status(500).json({ message: "Terjadi kesalahan" });
   }
 });
 
