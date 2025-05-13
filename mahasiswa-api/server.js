@@ -38,17 +38,22 @@ mongoose
   });
 
   // Endpoint untuk mengambil data Mahasiswa
-app.get("/mahasiswa", async (req, res) => {
-  try {
-    const { nrp } = req.query;
-    const mahasiswa = await Mahasiswa.findOne({ nrp }); // findOne() instead of find()
-    if (!mahasiswa) {
-      return res.status(404).json({ message: "Mahasiswa not found" });
-    }
-    res.json(mahasiswa); // Kirim objek, bukan array
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+app.get("/mahasiswa", (req, res) => {
+  const nrp = req.query.nrp;
+
+  // Misalnya, mengambil data mahasiswa dari database berdasarkan NRP
+  Mahasiswa.find({ nrp: nrp })
+    .then((data) => {
+      // Pastikan data selalu dalam bentuk array, bahkan jika hanya satu elemen
+      if (data.length === 1) {
+        return res.json([data[0]]); // Bungkus data dalam array
+      } else {
+        return res.json(data); // Jika ada lebih dari satu, kirim data seperti biasa
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
+    });
 });
 
 
