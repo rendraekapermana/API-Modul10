@@ -2,9 +2,12 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Mahasiswa = require("./models/Mahasiswa");
+const mahasiswaRoutes = require("./routes/mahasiswa");
+
 
 // Middleware penting!
 app.use(express.json()); // Untuk JSON
+app.use('/mahasiswa', mahasiswaRoutes); // akses: /mahasiswa?nrp=...
 app.use(express.urlencoded({ extended: true })); // Untuk x-www-form-urlencoded
 
 app.post("/mahasiswa", (req, res) => {
@@ -50,6 +53,7 @@ mongoose
   });
 
   // Endpoint untuk mengambil data Mahasiswa
+// Endpoint untuk mengambil data Mahasiswa
 app.get("/mahasiswa", async (req, res) => {
   const { nrp } = req.query;
 
@@ -57,14 +61,28 @@ app.get("/mahasiswa", async (req, res) => {
     const data = await Mahasiswa.findOne({ nrp });
 
     if (!data) {
-      return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
+      return res.status(404).json({
+        status: false,
+        data: [],
+        message: "Mahasiswa tidak ditemukan"
+      });
     }
 
-    res.json(data); // ✅ Mengembalikan objek
+    // ✅ Kembalikan dalam bentuk array
+    res.json({
+      status: true,
+      data: [data]
+    });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err });
+    res.status(500).json({
+      status: false,
+      data: [],
+      message: "Server error",
+      error: err
+    });
   }
 });
+
 
 
 
