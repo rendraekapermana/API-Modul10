@@ -3,7 +3,7 @@ const router = express.Router();
 const Mahasiswa = require("../models/Mahasiswa");
 
 // GET semua Mahasiswa
-router.get("/mahasiswa", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const data = await Mahasiswa.find();
     res.json(data);
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST tambah Mahasiswa
-router.post("/mahasiswa", async (req, res) => {
+router.post("/", async (req, res) => {
   const newMhs = new Mahasiswa(req.body);
   try {
     const saved = await newMhs.save();
@@ -35,7 +35,7 @@ router.post("/mahasiswa", async (req, res) => {
 });
 
 // PUT update mahasiswa
-router.put('/mahasiswa/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const updated = await Mahasiswa.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updated) return res.status(404).json({ message: 'Mahasiswa tidak ditemukan' });
@@ -45,15 +45,6 @@ router.put('/mahasiswa/:id', async (req, res) => {
     }
 });
 
-// DELETE hapus mahasiswa
-router.delete('/mahasiswa/:id', async (req, res) => {
-    try {
-        const deleted = await Mahasiswa.findByIdAndDelete(req.params.id);
-        if (!deleted) return res.status(404).json({ message: 'Mahasiswa tidak ditemukan' });
-        res.json({ message: 'Mahasiswa berhasil dihapus' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
+
 
 module.exports = router;
