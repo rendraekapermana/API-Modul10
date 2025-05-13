@@ -7,28 +7,21 @@ const Mahasiswa = require("./models/Mahasiswa");
 app.use(express.json()); // Untuk JSON
 app.use(express.urlencoded({ extended: true })); // Untuk x-www-form-urlencoded
 
-// Endpoint untuk menambahkan Mahasiswa
 app.post("/mahasiswa", (req, res) => {
   const mahasiswaData = req.body;
 
-  // Memastikan bahwa yang diterima adalah objek, bukan array
   if (Array.isArray(mahasiswaData)) {
     return res
       .status(400)
       .json({ message: "Data harus berupa objek, bukan array" });
   }
 
-  // Membuat objek mahasiswa baru
   const mahasiswaBaru = new Mahasiswa(mahasiswaData);
 
-  // Simpan ke database
   mahasiswaBaru
     .save()
     .then((result) => {
-      res.status(201).json({
-        message: "Mahasiswa berhasil ditambahkan",
-        mahasiswa: result,
-      });
+      res.status(201).json(result); // ✅ Kirimkan langsung objek Mahasiswa
     })
     .catch((err) => {
       res
