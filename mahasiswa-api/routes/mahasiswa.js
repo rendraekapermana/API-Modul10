@@ -6,11 +6,12 @@ const Mahasiswa = require("../models/Mahasiswa");
 router.get("/", async (req, res) => {
   try {
     const data = await Mahasiswa.find();
-    res.json(data); // Kembalikan array data mahasiswa
+    res.json({ mahasiswa: data });  // Membungkus array dalam objek dengan properti 'mahasiswa'
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 // GET mahasiswa berdasarkan ID MongoDB
 router.get("/:id", async (req, res) => {
@@ -31,7 +32,7 @@ router.post("/", async (req, res) => {
   const newMhs = new Mahasiswa(req.body);
   try {
     const saved = await newMhs.save();
-    res.status(201).json([saved]); // Mengirimkan data yang disimpan dalam array
+    res.status(201).json(saved);  // Mengirimkan data yang disimpan sebagai objek (bukan array)
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
