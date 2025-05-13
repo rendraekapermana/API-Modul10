@@ -1,23 +1,25 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const mahasiswaRoutes = require("./routes/mahasiswa");
-const cors = require("cors");
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
-mongoose.connect(
-  process.env.MONGO_URI || "mongodb://localhost:27017/mahasiswa",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+// Middleware untuk meng-handle body request dalam format application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+app.post("/mahasiswa", (req, res) => {
+  const { nrp, nama, email, jurusan } = req.body;
+
+  // Periksa jika ada data yang tidak ada
+  if (!nrp || !nama || !email || !jurusan) {
+    return res.status(400).json({ message: "Semua field harus diisi!" });
   }
-);
 
-app.use(cors());
-app.use(express.json()); // <- WAJIB AGAR BODY JSON DIBACA
-app.use("/mahasiswa", mahasiswaRoutes);
+  // Simulasi penyimpanan data (misalnya, simpan ke database)
+  res.status(200).json({
+    message: "Mahasiswa berhasil ditambahkan!",
+    status: true,
+  });
+});
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server berjalan di http://localhost:${port}`);
 });
