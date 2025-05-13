@@ -1,25 +1,21 @@
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+const mahasiswaRoutes = require("./routes/mahasiswa");
+
 const app = express();
-const port = 3000;
+app.use(express.json());
+app.use("/mahasiswa", mahasiswaRoutes);
 
-// Middleware untuk meng-handle body request dalam format application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3000;
 
-app.post("/mahasiswa", (req, res) => {
-  const { nrp, nama, email, jurusan } = req.body;
-
-  // Periksa jika ada data yang tidak ada
-  if (!nrp || !nama || !email || !jurusan) {
-    return res.status(400).json({ message: "Semua field harus diisi!" });
-  }
-
-  // Simulasi penyimpanan data (misalnya, simpan ke database)
-  res.status(200).json({
-    message: "Mahasiswa berhasil ditambahkan!",
-    status: true,
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Server berjalan di http://localhost:${port}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("MongoDB connected");
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch((err) => console.error("MongoDB connection error:", err));
