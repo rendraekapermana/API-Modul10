@@ -5,8 +5,10 @@ const mahasiswaRouter = require("./routes/mahasiswa"); // <- arahkan sesuai nama
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // <--- ini wajib ditambahkan
 
 // Routing
 app.use("/mahasiswa", mahasiswaRouter);
