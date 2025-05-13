@@ -14,11 +14,11 @@ app.use(express.urlencoded({ extended: true })); // <--- ini wajib ditambahkan
 app.use("/mahasiswa", mahasiswaRouter);
 
 // Cek koneksi database dan run server
+const mongoURI =
+  "mongodb+srv://rendraeka:rendra123456789@cluster0.cxb7x.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Ganti dengan URI yang benar
+
 mongoose
-  .connect("mongodb+srv://<your-mongo-uri>", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(mongoURI)
   .then(() => {
     app.listen(3000, () => {
       console.log("Server running on port 3000");
