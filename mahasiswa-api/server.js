@@ -7,6 +7,7 @@ const Mahasiswa = require("./models/Mahasiswa");
 app.use(express.json()); // Untuk JSON
 app.use(express.urlencoded({ extended: true })); // Untuk x-www-form-urlencoded
 
+// Endpoint untuk menambahkan Mahasiswa
 app.post("/mahasiswa", async (req, res) => {
   try {
     const { nama, nrp, email, jurusan } = req.body;
@@ -34,6 +35,28 @@ mongoose
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
+  });
+
+  // Endpoint untuk mengambil data Mahasiswa
+  app.get("/mahasiswa", async (req, res) => {
+    try {
+      const { nrp } = req.query;
+
+      if (nrp) {
+        // Cari berdasarkan NRP
+        const mahasiswa = await Mahasiswa.findOne({ nrp });
+        if (!mahasiswa) {
+          return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
+        }
+        return res.json(mahasiswa);
+      }
+
+      // Jika tidak ada query, kembalikan semua
+      const allMahasiswa = await Mahasiswa.find();
+      res.json(allMahasiswa);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
   });
 
 
