@@ -1,43 +1,17 @@
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
-const Mahasiswa = require("./models/Mahasiswa");
+const mahasiswaRoutes = require("./routes/mahasiswaRoutes"); // Mengimpor rute mahasiswa
+
+const app = express();
 
 // Middleware penting!
 app.use(express.json()); // Untuk JSON
 app.use(express.urlencoded({ extended: true })); // Untuk x-www-form-urlencoded
 
-// Endpoint untuk menambahkan Mahasiswa
-app.post("/mahasiswa", (req, res) => {
-  const mahasiswaData = req.body;
+// Menggunakan route mahasiswa
+app.use("/mahasiswa", mahasiswaRoutes); // Semua route mahasiswa di sini
 
-  // Memastikan bahwa yang diterima adalah objek, bukan array
-  if (Array.isArray(mahasiswaData)) {
-    return res
-      .status(400)
-      .json({ message: "Data harus berupa objek, bukan array" });
-  }
-
-  // Membuat objek mahasiswa baru
-  const mahasiswaBaru = new Mahasiswa(mahasiswaData);
-
-  // Simpan ke database
-  mahasiswaBaru
-    .save()
-    .then((result) => {
-      res.status(201).json({
-        message: "Mahasiswa berhasil ditambahkan",
-        mahasiswa: result,
-      });
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ message: "Gagal menyimpan data mahasiswa", error: err });
-    });
-});
-
-
+// Koneksi MongoDB dan menjalankan server
 mongoose
   .connect(
     "mongodb+srv://rendraeka:rendra123456789@cluster0.cxb7x.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
@@ -48,6 +22,7 @@ mongoose
   )
   .then(() => {
     console.log("MongoDB connected");
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
@@ -55,30 +30,3 @@ mongoose
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
-
-  // Endpoint untuk mengambil data Mahasiswa
-app.get("/mahasiswa", (req, res) => {
-  const nrp = req.query.nrp;
-
-  // Misalnya, mengambil data mahasiswa dari database berdasarkan NRP
-  Mahasiswa.find({ nrp: nrp })
-    .then((data) => {
-      // Pastikan data selalu dalam bentuk array, bahkan jika hanya satu elemen
-     res.json({
-       status: true,
-       data: data,
-     });
-    })
-    .catch((error) => {
-      res.status(500).json({ message: error.message });
-    });
-});
-
-
-
-
-// Jalankan server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
