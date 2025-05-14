@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const mahasiswaRoutes = require("./routes/mahasiswaRoutes"); // Mengimpor rute mahasiswa
+const mahasiswaRoutes = require("./routes/mahasiswa"); // Mengimpor rute mahasiswa
 
 const app = express();
 
