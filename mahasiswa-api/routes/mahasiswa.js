@@ -15,32 +15,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET mahasiswa berdasarkan ID MongoDB
-router.get("/:id", async (req, res) => {
+// Ambil semua mahasiswa
+router.get('/all', async (req, res) => {
   try {
-    const mhs = await Mahasiswa.findById(req.params.id);
-    if (!mhs)
-      return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
-
-    res.json({
-      status: true,
-      data: [mhs], // dibungkus array sesuai ekspektasi Android
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const allMahasiswa = await Mahasiswa.find();
+    res.json(allMahasiswa);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
-// GET semua Mahasiswa (tanpa filter)
-router.get("/all", async (req, res) => {
+// Ambil mahasiswa berdasarkan ID
+router.get('/:id', async (req, res) => {
   try {
-    const mahasiswaList = await Mahasiswa.find(); // Mengambil semua data mahasiswa
-    res.status(200).json({
-      status: true,
-      data: mahasiswaList, // Mengembalikan daftar semua mahasiswa
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Terjadi kesalahan" });
+    const mahasiswa = await Mahasiswa.findById(req.params.id);
+    if (!mahasiswa) return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
+    res.json(mahasiswa);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
